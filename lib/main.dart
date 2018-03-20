@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Who is Bringing AMMS Lunch?',
       theme: new ThemeData(
         // This is the theme of your application.
         //
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      home: new MyHomePage(title: 'This guy is bringing lunch'),
     );
   }
 }
@@ -43,16 +43,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  var _lunchSucker = "Adam";
+  var _nextSucker = "Adam";
+  List<String> _instrumentSupporters = ["Adam", "Dan", "Matt", "Alonso", "Harry"];
+  var _firstWeek = new DateTime(2018, 3, 15);
+  var _thisWeekString;
 
-  void _incrementCounter() {
+  _calculateWeekAfterWeekOne() {
     setState(() {
+      var _thisWeek = new DateTime.now();
+      _thisWeekString = _thisWeek.toIso8601String();
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
+      var _daysAfterMar15 = _thisWeek.difference(_firstWeek).inDays;
+      var _weeksAfterMar15 = (_daysAfterMar15 / 7).floor();
+      return _weeksAfterMar15;
+    });
+  }
+
+  _getLunchBringer(int numWeeksAfterMar15, List peopleInList){
+    setState((){
+      var peopleLength = peopleInList.length;
+      var positionOfLunchBringer = numWeeksAfterMar15 % peopleLength;
+      var positionOfNextBringer = (numWeeksAfterMar15 + 1) % peopleLength;
+
+      _lunchSucker = peopleInList[positionOfLunchBringer];
+      _nextSucker = peopleInList[positionOfNextBringer];
+
     });
   }
 
@@ -90,18 +110,24 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Text(
-              'You have pushed the button this many times:',
+              '$_lunchSucker',
+              style: Theme.of(context).textTheme.display1,
             ),
             new Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              ' is bringing lunch for the week of ',
+            ),
+            new Text(
+              '$_thisWeekString.'
+            ),
+            new Text(
+                'Next week will be: $_nextSucker.'
             ),
           ],
         ),
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: _getLunchBringer(_calculateWeekAfterWeekOne(), _instrumentSupporters),
+        tooltip: 'Render Lunch',
         child: new Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
