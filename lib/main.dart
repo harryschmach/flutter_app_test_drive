@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Who is Bringing AMMS Lunch?',
+      title: 'Who is Bringing Food?',
       theme: new ThemeData(
         // This is the theme of your application.
         //
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'This guy is bringing lunch'),
+      home: new MyHomePage(title: 'Let\'s eat'),
     );
   }
 }
@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<String> _instrumentSupporters = ["Mr. (Extra Salty) Fries", "Dan the Man", "Matt (not Van) Eagan", "The Ecoinamist", "Some Bearded Guy"];
   List<String> _systemsSustainers = ["Matt", "Miles", "Adam", "Alonso", "Austin", "Dan", "Erin", "Harry", "John"];
-  var _firstWeek = new DateTime(2018, 3, 15);
+  var _firstWeek = new DateTime(2018, 3, 16);
   var _thisWeekString;
 
   int _calculateWeekAfterWeekOne() {
@@ -65,17 +65,17 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      var _daysAfterMar15 = _thisWeek.difference(_firstWeek).inDays;
-      int _weeksAfterMar15 = (_daysAfterMar15 / 7).floor();
+      var _daysAfterMar16 = _thisWeek.difference(_firstWeek).inDays;
+      int _weeksAfterMar15 = (_daysAfterMar16 / 7).floor();
       return _weeksAfterMar15;
   }
 
   _getFoodBringer(List peopleInList, String thisBringer, String nextBringer){
     setState((){
-      int numWeeksAfterMar15 = _calculateWeekAfterWeekOne();
+      int numWeeksAfterMar16 = _calculateWeekAfterWeekOne();
       var peopleLength = peopleInList.length;
-      var positionOfFoodBringer = (numWeeksAfterMar15 % peopleLength);
-      var positionOfNextBringer = ((numWeeksAfterMar15 + 1) % peopleLength);
+      var positionOfFoodBringer = (numWeeksAfterMar16 % peopleLength);
+      var positionOfNextBringer = ((numWeeksAfterMar16 + 1) % peopleLength);
 
       thisBringer = peopleInList[positionOfFoodBringer];
       nextBringer = peopleInList[positionOfNextBringer];
@@ -85,8 +85,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _updateBringers(List supporters, String thisLuncher, String nextLuncher,
       List sustainers, String thisBreakfast, String nextBreakfast){
-    setState(_getFoodBringer(supporters, thisLuncher, nextLuncher));
-    setState(_getFoodBringer(sustainers, thisBreakfast, nextBreakfast));
+    setState(() {
+      _getFoodBringer(sustainers, thisBreakfast, nextBreakfast);
+      _getFoodBringer(supporters, thisLuncher, nextLuncher);
+    });
   }
 
   @override
