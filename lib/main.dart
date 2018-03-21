@@ -43,32 +43,35 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var _lunchSucker = "Adam";
-  var _nextSucker = "Adam";
-  List<String> _instrumentSupporters = ["Adam", "Dan", "Matt", "Alonso", "Harry"];
+  var _lunchSucker;
+  var _nextSucker;
+  List<String> _instrumentSupporters = ["Mr. (Extra Salty) Fries", "Dan the Man", "Matt (not Van) Eagan", "The Ecoinamist", "Some Bearded Guy"];
   var _firstWeek = new DateTime(2018, 3, 15);
   var _thisWeekString;
 
-  _calculateWeekAfterWeekOne() {
-    setState(() {
+  int _calculateWeekAfterWeekOne() {
       var _thisWeek = new DateTime.now();
-      _thisWeekString = _thisWeek.toIso8601String();
+      var _thisWeekMonday = (_thisWeek.day + 1 - _thisWeek.weekday);
+      var _thisMonth = _thisWeek.month;
+      var _thisYear = _thisWeek.year;
+
+      _thisWeekString = new DateTime(_thisYear, _thisMonth, _thisWeekMonday).toString().substring(0, 10);
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       var _daysAfterMar15 = _thisWeek.difference(_firstWeek).inDays;
-      var _weeksAfterMar15 = (_daysAfterMar15 / 7).floor();
+      int _weeksAfterMar15 = (_daysAfterMar15 / 7).floor();
       return _weeksAfterMar15;
-    });
   }
 
-  _getLunchBringer(int numWeeksAfterMar15, List peopleInList){
+  _getLunchBringer(List peopleInList){
     setState((){
+      int numWeeksAfterMar15 = _calculateWeekAfterWeekOne();
       var peopleLength = peopleInList.length;
-      var positionOfLunchBringer = numWeeksAfterMar15 % peopleLength;
-      var positionOfNextBringer = (numWeeksAfterMar15 + 1) % peopleLength;
+      var positionOfLunchBringer = (numWeeksAfterMar15 % peopleLength);
+      var positionOfNextBringer = ((numWeeksAfterMar15 + 1) % peopleLength);
 
       _lunchSucker = peopleInList[positionOfLunchBringer];
       _nextSucker = peopleInList[positionOfNextBringer];
@@ -78,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _getLunchBringer(_instrumentSupporters);
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -126,9 +130,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _getLunchBringer(_calculateWeekAfterWeekOne(), _instrumentSupporters),
+        onPressed: _getLunchBringer(_instrumentSupporters),
         tooltip: 'Render Lunch',
-        child: new Icon(Icons.add),
+        child: new Icon(Icons.refresh),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
