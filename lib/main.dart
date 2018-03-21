@@ -44,8 +44,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var _lunchSucker;
-  var _nextSucker;
+  var _nextLunchSucker;
+  var _breakfastSucker;
+  var _nextBreakfastSucker;
+
   List<String> _instrumentSupporters = ["Mr. (Extra Salty) Fries", "Dan the Man", "Matt (not Van) Eagan", "The Ecoinamist", "Some Bearded Guy"];
+  List<String> _systemsSustainers = ["Matt", "Miles", "Adam", "Alonso", "Austin", "Dan", "Erin", "Harry", "John"];
   var _firstWeek = new DateTime(2018, 3, 15);
   var _thisWeekString;
 
@@ -66,22 +70,31 @@ class _MyHomePageState extends State<MyHomePage> {
       return _weeksAfterMar15;
   }
 
-  _getLunchBringer(List peopleInList){
+  _getFoodBringer(List peopleInList, String thisBringer, String nextBringer){
     setState((){
       int numWeeksAfterMar15 = _calculateWeekAfterWeekOne();
       var peopleLength = peopleInList.length;
-      var positionOfLunchBringer = (numWeeksAfterMar15 % peopleLength);
+      var positionOfFoodBringer = (numWeeksAfterMar15 % peopleLength);
       var positionOfNextBringer = ((numWeeksAfterMar15 + 1) % peopleLength);
 
-      _lunchSucker = peopleInList[positionOfLunchBringer];
-      _nextSucker = peopleInList[positionOfNextBringer];
+      thisBringer = peopleInList[positionOfFoodBringer];
+      nextBringer = peopleInList[positionOfNextBringer];
 
     });
   }
 
+  _updateBringers(List supporters, String thisLuncher, String nextLuncher,
+      List sustainers, String thisBreakfast, String nextBreakfast){
+    setState(_getFoodBringer(supporters, thisLuncher, nextLuncher));
+    setState(_getFoodBringer(sustainers, thisBreakfast, nextBreakfast));
+  }
+
   @override
   Widget build(BuildContext context) {
-    _getLunchBringer(_instrumentSupporters);
+    _getFoodBringer(_instrumentSupporters, _lunchSucker, _nextLunchSucker);
+    _getFoodBringer(_systemsSustainers, _breakfastSucker, _nextBreakfastSucker);
+    _updateBringers(_instrumentSupporters, _lunchSucker, _nextLunchSucker,
+        _systemsSustainers, _breakfastSucker, _nextBreakfastSucker);
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -114,24 +127,30 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Text(
+              'For the week of $_thisWeekString',
+            ),
+            new Text(
               '$_lunchSucker',
               style: Theme.of(context).textTheme.display1,
             ),
             new Text(
-              ' is bringing lunch for the week of ',
+                'will bring AMMS lunch. Next week will be $_nextLunchSucker.',
+            )
+            ,
+            new Text(
+              '$_breakfastSucker',
+              style: Theme.of(context).textTheme.display1,
             ),
             new Text(
-              '$_thisWeekString.'
-            ),
-            new Text(
-                'Next week will be: $_nextSucker.'
-            ),
+              'will supply the breakfast club. Next week will be $_nextBreakfastSucker.',
+            )
           ],
         ),
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _getLunchBringer(_instrumentSupporters),
-        tooltip: 'Render Lunch',
+        onPressed: _updateBringers(_instrumentSupporters, _lunchSucker, _nextLunchSucker,
+            _systemsSustainers, _breakfastSucker, _nextBreakfastSucker),
+        tooltip: 'Render Food',
         child: new Icon(Icons.refresh),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
