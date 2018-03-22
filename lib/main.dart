@@ -66,37 +66,39 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       var _daysAfterMar16 = _thisWeek.difference(_firstWeek).inDays;
-      int _weeksAfterMar15 = (_daysAfterMar16 / 7).floor();
-      return _weeksAfterMar15;
+      int _weeksAfterMar16 = (_daysAfterMar16 / 7).floor();
+      return _weeksAfterMar16;
   }
 
-  _getFoodBringer(List peopleInList, String thisBringer, String nextBringer){
-    setState((){
+  String _getThisFoodBringer(List peopleInList){
       int numWeeksAfterMar16 = _calculateWeekAfterWeekOne();
       var peopleLength = peopleInList.length;
       var positionOfFoodBringer = (numWeeksAfterMar16 % peopleLength);
-      var positionOfNextBringer = ((numWeeksAfterMar16 + 1) % peopleLength);
 
-      thisBringer = peopleInList[positionOfFoodBringer];
-      nextBringer = peopleInList[positionOfNextBringer];
-
-    });
+      return peopleInList[positionOfFoodBringer];
   }
 
-  _updateBringers(List supporters, String thisLuncher, String nextLuncher,
-      List sustainers, String thisBreakfast, String nextBreakfast){
+
+  String _getNextFoodBringer(List peopleInList){
+      int numWeeksAfterMar16 = _calculateWeekAfterWeekOne();
+      var peopleLength = peopleInList.length;
+      var positionOfNextBringer = ((numWeeksAfterMar16 + 1) % peopleLength);
+
+      return peopleInList[positionOfNextBringer];
+  }
+
+  _updateBringers(List supporters, List sustainers){
     setState(() {
-      _getFoodBringer(sustainers, thisBreakfast, nextBreakfast);
-      _getFoodBringer(supporters, thisLuncher, nextLuncher);
+      _breakfastSucker = _getThisFoodBringer(sustainers);
+      _lunchSucker = _getThisFoodBringer(supporters);
+      _nextBreakfastSucker = _getNextFoodBringer(sustainers);
+      _nextLunchSucker = _getNextFoodBringer(supporters);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    _getFoodBringer(_instrumentSupporters, _lunchSucker, _nextLunchSucker);
-    _getFoodBringer(_systemsSustainers, _breakfastSucker, _nextBreakfastSucker);
-    _updateBringers(_instrumentSupporters, _lunchSucker, _nextLunchSucker,
-        _systemsSustainers, _breakfastSucker, _nextBreakfastSucker);
+    _updateBringers(_instrumentSupporters, _systemsSustainers);
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -150,8 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _updateBringers(_instrumentSupporters, _lunchSucker, _nextLunchSucker,
-            _systemsSustainers, _breakfastSucker, _nextBreakfastSucker),
+        onPressed: _updateBringers(_instrumentSupporters, _systemsSustainers),
         tooltip: 'Render Food',
         child: new Icon(Icons.refresh),
       ), // This trailing comma makes auto-formatting nicer for build methods.
